@@ -12,6 +12,26 @@
   --dim:#8b96b1;--accent:#4e6df7;--green:#2ac48a;--red:#e65f79;
   --orange:#e4a125;--purple:#7a6cf4;--row-hover:#f7f9fd;--header:#203251;
   --shadow:0 1px 3px rgba(36,52,82,.06);
+  --header-bg:#fff;
+  --board-bg:#fff;
+  --bar-track:#f1f4fb;
+  --subtle:#e8edf6;
+  --detail-bg:#f7f9fd;
+  --ping-chip-bg:#fff;
+  --theme-btn-hover:#eef2fb;
+}
+[data-theme="dark"]{
+  --bg:#0f1422;--card:#151d2f;--border:#2a3754;--text:#d5def2;
+  --dim:#9fb0d6;--accent:#7e96ff;--green:#29c58c;--red:#ef6a86;
+  --orange:#e6ab39;--purple:#9b8cff;--row-hover:#1a2438;--header:#e5edff;
+  --shadow:0 1px 3px rgba(0,0,0,.35);
+  --header-bg:#151d2f;
+  --board-bg:#151d2f;
+  --bar-track:#22304d;
+  --subtle:#304161;
+  --detail-bg:#11192b;
+  --ping-chip-bg:#131d30;
+  --theme-btn-hover:#253453;
 }
 body{
   background:var(--bg);
@@ -22,9 +42,14 @@ body{
 }
 
 .header{
-  height:48px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);background:#fff;
+  height:48px;padding:0 10px;
+  border-bottom:1px solid var(--border);background:var(--header-bg);
   position:sticky;top:0;z-index:10
+}
+.header-inner{
+  width:75%;max-width:100%;margin:0 auto;
+  height:100%;
+  display:flex;align-items:center;justify-content:space-between;
 }
 .header h1{font-size:31px;font-weight:800;color:#37b37e;letter-spacing:.1px;line-height:1}
 .header .right{display:flex;align-items:center;gap:12px;font-size:12px;color:#5f6f92;font-weight:700}
@@ -38,7 +63,7 @@ body{
   border:1px solid var(--border);
   border-radius:6px;
   overflow:hidden;
-  background:#fff;
+  background:var(--board-bg);
 }
 
 .cards{padding:0;display:flex;flex-direction:column;gap:0}
@@ -66,43 +91,43 @@ body{
   white-space:nowrap;
   font-size:14px;
   font-weight:400;
-  color:#3730a3
+  color:var(--text)
 }
 .card-header:hover{background:transparent}
 
-.ch-name{font-weight:400;font-size:14px;color:#3730a3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.ch-name{font-weight:400;font-size:14px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
 .name-wrap{display:inline-flex;align-items:center;gap:6px}
 .exp-icon{font-size:12px;color:#6f7fa4;line-height:1;display:inline-block;min-width:10px}
-.server-card.open .exp-icon{color:#3730a3}
-.ch-protocol{font-size:14px;color:#3730a3;font-weight:400}
+.server-card.open .exp-icon{color:var(--text)}
+.ch-protocol{font-size:14px;color:var(--text);font-weight:400}
 .proto-dots{display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .proto-dot{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid transparent}
 .proto-dot.ipv4{background:var(--green);border-color:#1ea773}
 .proto-dot.ipv6{background:var(--red);border-color:#cc4760}
-.ch-uptime{font-size:14px;color:#3730a3;font-weight:400}
-.ch-ip{font-size:14px;color:#3730a3;font-weight:400}
-.ch-load{font-size:14px;color:#3730a3;font-weight:400;font-variant-numeric:tabular-nums}
+.ch-uptime{font-size:14px;color:var(--text);font-weight:400}
+.ch-ip{font-size:14px;color:var(--text);font-weight:400}
+.ch-load{font-size:14px;color:var(--text);font-weight:400;font-variant-numeric:tabular-nums}
 
-.ch-traffic{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:#3730a3}
-.ch-traffic .dn{color:#3730a3}.ch-traffic .up{color:#3730a3}
+.ch-traffic{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
+.ch-traffic .dn{color:var(--text)}.ch-traffic .up{color:var(--text)}
 
-.ch-speed{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:#3730a3}
-.ch-speed .dn{color:#3730a3}.ch-speed .up{color:#3730a3}
+.ch-speed{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
+.ch-speed .dn{color:var(--text)}.ch-speed .up{color:var(--text)}
 
 .bar-cell{display:flex;align-items:center;justify-content:center;gap:4px}
-.bar-bg{flex:1;height:14px;background:#f1f4fb;border-radius:0;overflow:hidden;min-width:40px;border-left:1px solid #e8edf6;border-right:1px solid #e8edf6}
+.bar-bg{flex:1;height:14px;background:var(--bar-track);border-radius:0;overflow:hidden;min-width:40px;border-left:1px solid var(--subtle);border-right:1px solid var(--subtle)}
 .bar-fill{height:100%;border-radius:0;transition:width .4s ease}
-.bar-label{font-size:14px;font-weight:400;width:52px;text-align:right;font-variant-numeric:tabular-nums;color:#3730a3}
+.bar-label{font-size:14px;font-weight:400;width:52px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
 
 .ping-cell{display:grid;grid-template-columns:repeat(3,1fr);justify-content:center;gap:4px;font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;white-space:nowrap;width:100%}
-.ping-item{padding:1px 4px;border-radius:2px;min-width:0;text-align:center;white-space:nowrap;line-height:1.3;color:#3730a3}
+.ping-item{padding:1px 4px;border-radius:2px;min-width:0;text-align:center;white-space:nowrap;line-height:1.3;color:var(--text)}
 .ping-item.good{background:#2ac48a20;color:#23ab76}
 .ping-item.mid{background:#e4a12520;color:#d18d14}
 .ping-item.bad{background:#e65f7920;color:#db4f6b}
 
 .col-labels{
   display:grid;grid-template-columns:120px 90px 120px 130px 80px 120px 120px 120px 90px 90px 90px 150px;
-  justify-items:center;padding:8px 10px;gap:8px;background:#fff;border-bottom:1px solid var(--border)
+  justify-items:center;padding:8px 10px;gap:8px;background:var(--header-bg);border-bottom:1px solid var(--border)
 }
 .col-labels span{
   width:100%;
@@ -113,37 +138,44 @@ body{
   white-space:nowrap;
   font-size:16px;
   font-weight:700;
-  color:#3730a3
+  color:var(--text)
 }
 
-.card-detail{padding:10px;background:#f7f9fd;border-top:1px solid var(--border)}
+.card-detail{padding:10px;background:var(--detail-bg);border-top:1px solid var(--border)}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .detail-section{background:var(--card);border-radius:6px;padding:10px;border:1px solid var(--border);box-shadow:none}
 .detail-section h3{font-size:13px;color:var(--header);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
-.info-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #e5eaf5}
+.info-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--subtle)}
 .info-item:last-child{border:none}
 .info-item .k{color:#5e6e93;font-size:12px;font-weight:600}
 .info-item .v{font-weight:700;font-size:12px;font-variant-numeric:tabular-nums;color:#36456c}
 
 .proc-table{width:100%;font-size:12px;border-collapse:collapse;font-weight:700}
-.proc-table td{padding:3px 4px;border-bottom:1px solid #ecf0f8}
+.proc-table td{padding:3px 4px;border-bottom:1px solid var(--subtle)}
 .proc-bar{display:flex;align-items:center;gap:3px}
 .proc-bar .bar-bg{height:3px;flex:1;min-width:24px}
 .proc-bar span{font-size:11px;width:36px;text-align:right;font-variant-numeric:tabular-nums}
 
 .net-table{width:100%;font-size:12px;border-collapse:collapse;font-weight:700}
-.net-table th{text-align:left;color:#5e6e93;font-weight:700;padding:3px 4px;border-bottom:1px solid #ecf0f8}
-.net-table td{padding:4px 4px;border-bottom:1px solid #ecf0f8;font-variant-numeric:tabular-nums}
+.net-table th{text-align:left;color:#5e6e93;font-weight:700;padding:3px 4px;border-bottom:1px solid var(--subtle)}
+.net-table td{padding:4px 4px;border-bottom:1px solid var(--subtle);font-variant-numeric:tabular-nums}
 
 .ping-detail{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.ping-detail .item{background:#fff;border-radius:4px;padding:6px 8px;text-align:center;min-width:80px;border:1px solid #e6ebf4}
+.ping-detail .item{background:var(--ping-chip-bg);border-radius:4px;padding:6px 8px;text-align:center;min-width:80px;border:1px solid var(--subtle)}
 .ping-detail .item .host{font-size:12px;color:#5e6e93;font-weight:700}
 .ping-detail .item .ms{font-size:16px;font-weight:700;margin-top:2px}
 
-.chart-wrap{background:#fff;border-radius:6px;padding:8px;margin-top:8px;border:1px solid var(--border);box-shadow:none}
+.chart-wrap{background:var(--card);border-radius:6px;padding:8px;margin-top:8px;border:1px solid var(--border);box-shadow:none}
 .chart-wrap h3{font-size:12px;color:var(--header);margin-bottom:6px;font-weight:700}
 canvas.chart{width:100%;height:80px;display:block}
+.theme-toggle{
+  width:32px;height:32px;border:1px solid var(--border);border-radius:8px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--text);cursor:pointer;
+}
+.theme-toggle:hover{background:var(--theme-btn-hover)}
+.theme-toggle svg{width:18px;height:18px;display:block}
 
 .empty{text-align:center;padding:50px 20px;color:#6f7fa4;font-weight:700}
 .empty .icon{font-size:36px;margin-bottom:10px}
@@ -164,10 +196,13 @@ canvas.chart{width:100%;height:80px;display:block}
 <body>
 
 <div class="header">
-  <h1>⚡ ServerStatus</h1>
-  <div class="right">
-    <span><span class="ws-dot off" id="wsDot"></span> <span id="wsText">连接中...</span></span>
-    <span id="serverCount">--</span>
+  <div class="header-inner">
+    <h1>⚡ ServerStatus</h1>
+    <div class="right">
+      <span><span class="ws-dot off" id="wsDot"></span> <span id="wsText">连接中...</span></span>
+      <span id="serverCount">--</span>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换主题" title="切换主题"></button>
+    </div>
   </div>
 </div>
 
@@ -206,6 +241,31 @@ const cardsEl = document.getElementById('cards');
 const emptyEl = document.getElementById('empty');
 const labelsEl = document.getElementById('colLabels');
 const serverCountEl = document.getElementById('serverCount');
+const THEME_KEY = 'serverstatus-theme';
+const themeToggleEl = document.getElementById('themeToggle');
+
+const moonIcon = `<svg width="24" height="24" fill="none" aria-hidden="true"><path d="M18 15.63c-.977.52-1.945.481-3.13.481A6.981 6.981 0 0 1 7.89 9.13c0-1.185-.04-2.153.481-3.13C6.166 7.174 5 9.347 5 12.018A6.981 6.981 0 0 0 11.982 19c2.67 0 4.844-1.166 6.018-3.37ZM16 5c0 2.08-.96 4-3 4 2.04 0 3 .92 3 3 0-2.08.96-3 3-3-2.04 0-3-1.92-3-4Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+const sunIcon = `<svg width="24" height="24" fill="none" aria-hidden="true"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 4v1M18 6l-1 1M20 12h-1M18 18l-1-1M12 19v1M7 17l-1 1M5 12H4M7 7 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+
+function applyTheme(theme){
+  const nextTheme = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', nextTheme);
+  localStorage.setItem(THEME_KEY, nextTheme);
+  if(themeToggleEl){
+    themeToggleEl.innerHTML = nextTheme === 'dark' ? sunIcon : moonIcon;
+    themeToggleEl.setAttribute('aria-label', nextTheme === 'dark' ? '切换到白天模式' : '切换到黑夜模式');
+    themeToggleEl.setAttribute('title', nextTheme === 'dark' ? '切换到白天模式' : '切换到黑夜模式');
+  }
+}
+
+function initTheme(){
+  const stored = localStorage.getItem(THEME_KEY);
+  if(stored === 'dark' || stored === 'light'){
+    applyTheme(stored);
+    return;
+  }
+  applyTheme('light');
+}
 
 function queueRender(){
   if(renderQueued) return;
@@ -274,7 +334,6 @@ function connectWS(){
   ws.onmessage = (e)=>{
     let msg;
     try { msg = JSON.parse(e.data); } catch { return; }
-    if(msg.clients !== undefined) serverCountEl.textContent = `${msg.clients} 台`;
     const data = msg.data;
     if(Array.isArray(data)) syncServers(data);
     else if(data && data.name) ingest(data);
@@ -283,6 +342,12 @@ function connectWS(){
 }
 
 function bindUI(){
+  if(themeToggleEl){
+    themeToggleEl.addEventListener('click', ()=>{
+      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
   const toggleByEvent = (e)=>{
     const target = e.target instanceof Element ? e.target : null;
     if(!target) return false;
@@ -313,6 +378,7 @@ function bindUI(){
 
 function render(){
   const names = Object.keys(state.servers).sort();
+  serverCountEl.textContent = `${names.length} 台`;
   emptyEl.style.display = names.length ? 'none' : 'block';
   labelsEl.style.display = names.length ? 'grid' : 'none';
   if(!names.length){
@@ -384,7 +450,7 @@ function render(){
 function barMini(v, good, bad){
   const pct = Math.min(Math.max(v || 0, 0), 100);
   const c = (v||0) > 80 ? bad : (v||0) > 50 ? 'var(--orange)' : good;
-  return `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${c};opacity:.85"></div></div><span class="bar-label" style="color:#3730a3">${Math.round(v||0)}%</span></div>`;
+  return `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${c};opacity:.85"></div></div><span class="bar-label">${Math.round(v||0)}%</span></div>`;
 }
 
 function pingCell(p){
@@ -536,6 +602,7 @@ function tick(){
 
 if(window.__INIT_DATA__) syncServers(window.__INIT_DATA__);
 else fetch('/api/data').then(r=>r.json()).then(syncServers).catch(()=>{});
+initTheme();
 bindUI();
 connectWS();
 render();
