@@ -13,6 +13,7 @@ demo：
 
 <img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/90b17ba7-c5cf-43a5-9392-0b0c02209fdf" />
 
+<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/72a54630-3900-4c4f-8df4-2196a423d7fa" />
 
 
 ## 1. 功能概览
