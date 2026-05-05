@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ServerStatus</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f2f4f8;--card:#ffffff;--border:#e7ebf3;--text:#2f3550;
+  --dim:#8b96b1;--accent:#4e6df7;--green:#2ac48a;--red:#e65f79;
+  --orange:#e4a125;--purple:#7a6cf4;--row-hover:#f7f9fd;--header:#203251;
+  --shadow:0 1px 3px rgba(36,52,82,.06);
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,'Segoe UI','PingFang SC','Noto Sans CJK SC',sans-serif;
+  font-size:14px;
+  padding-bottom:40px
+}
+
+.header{
+  height:48px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:#fff;
+  position:sticky;top:0;z-index:10
+}
+.header h1{font-size:31px;font-weight:800;color:#37b37e;letter-spacing:.1px;line-height:1}
+.header .right{display:flex;align-items:center;gap:12px;font-size:12px;color:#5f6f92;font-weight:700}
+.ws-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.ws-dot.on{background:var(--green);box-shadow:0 0 6px var(--green)}
+.ws-dot.off{background:var(--red)}
+
+.board-scroll{padding:8px 10px;overflow-x:auto}
+.board{
+  width:75%;max-width:100%;margin:0 auto;
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;
+  background:#fff;
+}
+
+.cards{padding:0;display:flex;flex-direction:column;gap:0}
+.server-card{
+  background:var(--card);
+  border:0;
+  border-top:1px solid var(--border);
+  border-radius:0;
+  overflow:hidden;
+  box-shadow:none;
+  transition:none
+}
+.server-card:hover{background:var(--card)}
+
+.card-header{
+  display:grid;grid-template-columns:120px 90px 120px 130px 80px 120px 120px 120px 90px 90px 90px 150px;
+  align-items:center;justify-items:center;padding:8px 10px;gap:8px;cursor:pointer;min-height:44px
+}
+.card-header > div{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  white-space:nowrap;
+  font-size:14px;
+  font-weight:400;
+  color:#3730a3
+}
+.card-header:hover{background:transparent}
+
+.ch-name{font-weight:400;font-size:14px;color:#3730a3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.name-wrap{display:inline-flex;align-items:center;gap:6px}
+.exp-icon{font-size:12px;color:#6f7fa4;line-height:1;display:inline-block;min-width:10px}
+.server-card.open .exp-icon{color:#3730a3}
+.ch-protocol{font-size:14px;color:#3730a3;font-weight:400}
+.proto-dots{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.proto-dot{width:10px;height:10px;border-radius:50%;display:inline-block;border:1px solid transparent}
+.proto-dot.ipv4{background:var(--green);border-color:#1ea773}
+.proto-dot.ipv6{background:var(--red);border-color:#cc4760}
+.ch-uptime{font-size:14px;color:#3730a3;font-weight:400}
+.ch-ip{font-size:14px;color:#3730a3;font-weight:400}
+.ch-load{font-size:14px;color:#3730a3;font-weight:400;font-variant-numeric:tabular-nums}
+
+.ch-traffic{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:#3730a3}
+.ch-traffic .dn{color:#3730a3}.ch-traffic .up{color:#3730a3}
+
+.ch-speed{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:#3730a3}
+.ch-speed .dn{color:#3730a3}.ch-speed .up{color:#3730a3}
+
+.bar-cell{display:flex;align-items:center;justify-content:center;gap:4px}
+.bar-bg{flex:1;height:14px;background:#f1f4fb;border-radius:0;overflow:hidden;min-width:40px;border-left:1px solid #e8edf6;border-right:1px solid #e8edf6}
+.bar-fill{height:100%;border-radius:0;transition:width .4s ease}
+.bar-label{font-size:14px;font-weight:400;width:52px;text-align:right;font-variant-numeric:tabular-nums;color:#3730a3}
+
+.ping-cell{display:grid;grid-template-columns:repeat(3,1fr);justify-content:center;gap:4px;font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;white-space:nowrap;width:100%}
+.ping-item{padding:1px 4px;border-radius:2px;min-width:0;text-align:center;white-space:nowrap;line-height:1.3;color:#3730a3}
+.ping-item.good{background:#2ac48a20;color:#23ab76}
+.ping-item.mid{background:#e4a12520;color:#d18d14}
+.ping-item.bad{background:#e65f7920;color:#db4f6b}
+
+.col-labels{
+  display:grid;grid-template-columns:120px 90px 120px 130px 80px 120px 120px 120px 90px 90px 90px 150px;
+  justify-items:center;padding:8px 10px;gap:8px;background:#fff;border-bottom:1px solid var(--border)
+}
+.col-labels span{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  white-space:nowrap;
+  font-size:16px;
+  font-weight:700;
+  color:#3730a3
+}
+
+.card-detail{padding:10px;background:#f7f9fd;border-top:1px solid var(--border)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.detail-section{background:var(--card);border-radius:6px;padding:10px;border:1px solid var(--border);box-shadow:none}
+.detail-section h3{font-size:13px;color:var(--header);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.info-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #e5eaf5}
+.info-item:last-child{border:none}
+.info-item .k{color:#5e6e93;font-size:12px;font-weight:600}
+.info-item .v{font-weight:700;font-size:12px;font-variant-numeric:tabular-nums;color:#36456c}
+
+.proc-table{width:100%;font-size:12px;border-collapse:collapse;font-weight:700}
+.proc-table td{padding:3px 4px;border-bottom:1px solid #ecf0f8}
+.proc-bar{display:flex;align-items:center;gap:3px}
+.proc-bar .bar-bg{height:3px;flex:1;min-width:24px}
+.proc-bar span{font-size:11px;width:36px;text-align:right;font-variant-numeric:tabular-nums}
+
+.net-table{width:100%;font-size:12px;border-collapse:collapse;font-weight:700}
+.net-table th{text-align:left;color:#5e6e93;font-weight:700;padding:3px 4px;border-bottom:1px solid #ecf0f8}
+.net-table td{padding:4px 4px;border-bottom:1px solid #ecf0f8;font-variant-numeric:tabular-nums}
+
+.ping-detail{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ping-detail .item{background:#fff;border-radius:4px;padding:6px 8px;text-align:center;min-width:80px;border:1px solid #e6ebf4}
+.ping-detail .item .host{font-size:12px;color:#5e6e93;font-weight:700}
+.ping-detail .item .ms{font-size:16px;font-weight:700;margin-top:2px}
+
+.chart-wrap{background:#fff;border-radius:6px;padding:8px;margin-top:8px;border:1px solid var(--border);box-shadow:none}
+.chart-wrap h3{font-size:12px;color:var(--header);margin-bottom:6px;font-weight:700}
+canvas.chart{width:100%;height:80px;display:block}
+
+.empty{text-align:center;padding:50px 20px;color:#6f7fa4;font-weight:700}
+.empty .icon{font-size:36px;margin-bottom:10px}
+
+@media(max-width:1200px){
+  .card-header{grid-template-columns:105px 80px 110px 120px 70px 110px 110px 110px 80px 80px 80px 130px}
+  .col-labels{grid-template-columns:105px 80px 110px 120px 70px 110px 110px 110px 80px 80px 80px 130px}
+  .detail-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .card-header{grid-template-columns:80px 60px 1fr 1fr 1fr}
+  .col-labels{display:none}
+  .ch-uptime,.ch-ip,.ch-load,.ch-traffic,.ch-speed,.ping-cell{display:none}
+  .detail-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ ServerStatus</h1>
+  <div class="right">
+    <span><span class="ws-dot off" id="wsDot"></span> <span id="wsText">连接中...</span></span>
+    <span id="serverCount">--</span>
+  </div>
+</div>
+
+<div class="board-scroll">
+  <div class="board">
+    <div class="col-labels" id="colLabels" style="display:none">
+      <span>节点</span><span>协议</span><span>启动时间</span><span>IP</span><span>负载</span>
+      <span>月流量 ↓|↑</span><span>网络 ↓|↑</span><span>总流量 ↓|↑</span>
+      <span>处理器</span><span>内存</span><span>硬盘</span><span>联通 | 电信 | 移动</span>
+    </div>
+
+    <div class="cards" id="cards">
+      <div class="empty" id="empty">
+        <div class="icon">📡</div>
+        <div>等待服务器上报数据...</div>
+        <div style="font-size:12px;margin-top:4px">运行 <code>serverstatus-client http://此服务器:9092 机器名</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  servers: Object.create(null),
+  chartData: Object.create(null),
+  animVals: Object.create(null),
+  expanded: new Set(),
+};
+
+let ws;
+let renderQueued = false;
+let lastPointerToggleAt = 0;
+const MAX_PTS = 300;
+const PING_LABELS = {'112.64.212.1':'联通','202.96.209.5':'电信','211.136.112.50':'移动'};
+const cardsEl = document.getElementById('cards');
+const emptyEl = document.getElementById('empty');
+const labelsEl = document.getElementById('colLabels');
+const serverCountEl = document.getElementById('serverCount');
+
+function queueRender(){
+  if(renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(()=>{
+    renderQueued = false;
+    render();
+  });
+}
+
+function ingest(d){
+  if(!d || !d.name) return;
+  const n = d.name;
+
+  if(!state.chartData[n]) state.chartData[n] = {up:[], dn:[], ts:[]};
+  const cd = state.chartData[n];
+  cd.up.push(d.net_upload || 0);
+  cd.dn.push(d.net_down || 0);
+  cd.ts.push(Date.now());
+  if(cd.up.length > MAX_PTS){
+    cd.up.shift(); cd.dn.shift(); cd.ts.shift();
+  }
+
+  if(!state.animVals[n]) state.animVals[n] = {};
+  const a = state.animVals[n];
+  a.cpu = lerp(a.cpu || 0, d.cpu || 0, .35);
+  a.mem = lerp(a.mem || 0, d.memory || 0, .35);
+  a.disk = lerp(a.disk || 0, d.disk || 0, .35);
+  a.up = lerp(a.up || 0, d.net_upload || 0, .4);
+  a.dn = lerp(a.dn || 0, d.net_down || 0, .4);
+
+  state.servers[n] = d;
+}
+
+function syncServers(arr){
+  const keep = new Set();
+  (arr || []).forEach(d=>{
+    if(!d || !d.name) return;
+    keep.add(d.name);
+    ingest(d);
+  });
+
+  Object.keys(state.servers).forEach(name=>{
+    if(keep.has(name)) return;
+    delete state.servers[name];
+    delete state.chartData[name];
+    delete state.animVals[name];
+    state.expanded.delete(name);
+  });
+}
+
+function connectWS(){
+  const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${protocol}//${location.host}/ws`);
+
+  ws.onopen = ()=>{
+    document.getElementById('wsDot').className = 'ws-dot on';
+    document.getElementById('wsText').textContent = '已连接';
+  };
+  ws.onclose = ()=>{
+    document.getElementById('wsDot').className = 'ws-dot off';
+    document.getElementById('wsText').textContent = '重连中...';
+    setTimeout(connectWS, 3000);
+  };
+  ws.onerror = ()=>ws.close();
+  ws.onmessage = (e)=>{
+    let msg;
+    try { msg = JSON.parse(e.data); } catch { return; }
+    if(msg.clients !== undefined) serverCountEl.textContent = `${msg.clients} 台`;
+    const data = msg.data;
+    if(Array.isArray(data)) syncServers(data);
+    else if(data && data.name) ingest(data);
+    queueRender();
+  };
+}
+
+function bindUI(){
+  const toggleByEvent = (e)=>{
+    const target = e.target instanceof Element ? e.target : null;
+    if(!target) return false;
+    const header = target.closest('.card-header');
+    if(!header || !cardsEl.contains(header)) return false;
+    const name = header.dataset.name;
+    if(!name) return false;
+    if(state.expanded.has(name)) state.expanded.delete(name);
+    else state.expanded.add(name);
+    queueRender();
+    return true;
+  };
+
+  // 关键：WS 重绘时 click 可能丢，pointerdown 先触发一次确保稳定
+  cardsEl.addEventListener('pointerdown', (e)=>{
+    if(toggleByEvent(e)){
+      lastPointerToggleAt = Date.now();
+      e.preventDefault();
+    }
+  });
+
+  cardsEl.addEventListener('click', (e)=>{
+    // pointerdown 已处理过时，忽略紧随其后的 click，避免双切换
+    if(Date.now() - lastPointerToggleAt < 220) return;
+    toggleByEvent(e);
+  });
+}
+
+function render(){
+  const names = Object.keys(state.servers).sort();
+  emptyEl.style.display = names.length ? 'none' : 'block';
+  labelsEl.style.display = names.length ? 'grid' : 'none';
+  if(!names.length){
+    cardsEl.querySelectorAll('.server-card').forEach(el=>el.remove());
+    return;
+  }
+  const existing = new Map();
+  cardsEl.querySelectorAll('.server-card').forEach(card=>{
+    existing.set(card.dataset.name, card);
+  });
+
+  const frag = document.createDocumentFragment();
+  names.forEach(name=>{
+    const d = state.servers[name];
+    const a = state.animVals[name] || {};
+    const open = state.expanded.has(name);
+
+    let card = existing.get(name);
+    if(!card){
+      card = document.createElement('div');
+      card.className = 'server-card';
+      card.id = `card-${name}`;
+      card.dataset.name = name;
+      card.innerHTML = '<div class="card-header"></div>';
+    }
+    existing.delete(name);
+
+    card.classList.toggle('open', open);
+    card.dataset.name = name;
+    const hdr = card.querySelector('.card-header');
+    hdr.dataset.name = name;
+    hdr.innerHTML = `
+      <div class="ch-name"><span class="name-wrap"><span class="exp-icon">${open ? '▾' : '▸'}</span><span>${esc(name)}</span></span></div>
+      <div class="ch-protocol">${protocolDots(d.protocol)}</div>
+      <div class="ch-uptime">${fmtUptime(d.uptime)}</div>
+      <div class="ch-ip">${esc(d.ip||'--')}</div>
+      <div class="ch-load">${(d.load1||0).toFixed(2)}</div>
+      <div class="ch-traffic"><span class="dn">${fmtBytes(d.vnstat_month_down||0)}</span>|<span class="up">${fmtBytes(d.vnstat_month_up||0)}</span></div>
+      <div class="ch-speed"><span class="dn">${fmtSpeed(a.dn||0)}</span>|<span class="up">${fmtSpeed(a.up||0)}</span></div>
+      <div class="ch-traffic"><span class="dn">${fmtBytes(d.vnstat_total_down||0)}</span>|<span class="up">${fmtBytes(d.vnstat_total_up||0)}</span></div>
+      <div>${barMini(a.cpu,'#00a86b','#e04060')}</div>
+      <div>${barMini(a.mem,'#7c3aed','#e04060')}</div>
+      <div>${barMini(a.disk,'#e8920a','#e04060')}</div>
+      <div class="ping-cell">${pingCell(d.ping)}</div>
+    `;
+
+    let detail = card.querySelector('.card-detail');
+    if(open){
+      if(!detail){
+        detail = document.createElement('div');
+        detail.className = 'card-detail';
+        card.appendChild(detail);
+      }
+      detail.innerHTML = detailPanel(name,d,a);
+    } else if(detail){
+      detail.remove();
+    }
+    frag.appendChild(card);
+  });
+
+  existing.forEach(card=>card.remove());
+  cardsEl.appendChild(frag);
+
+  names.forEach(name=>{
+    if(state.expanded.has(name)) drawChart(name, state.chartData[name]);
+  });
+}
+
+function barMini(v, good, bad){
+  const pct = Math.min(Math.max(v || 0, 0), 100);
+  const c = (v||0) > 80 ? bad : (v||0) > 50 ? 'var(--orange)' : good;
+  return `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${c};opacity:.85"></div></div><span class="bar-label" style="color:#3730a3">${Math.round(v||0)}%</span></div>`;
+}
+
+function pingCell(p){
+  if(!p) return '<span style="color:var(--dim)">--</span>';
+  const order = ['112.64.212.1','202.96.209.5','211.136.112.50'];
+  return order.map(h=>{
+    const ms = p[h];
+    if(ms === undefined) return '<span class="ping-item" style="color:var(--dim)">--</span>';
+    const label = PING_LABELS[h] || h;
+    if(ms < 0) return `<span class="ping-item bad" title="${label}">超时</span>`;
+    const cls = ms < 60 ? 'good' : ms < 150 ? 'mid' : 'bad';
+    return `<span class="ping-item ${cls}" title="${label}">${ms}ms</span>`;
+  }).join('');
+}
+
+function protocolDots(protocol){
+  const p = String(protocol || 'IPv4').toUpperCase();
+  const has4 = p.includes('IPV4');
+  const has6 = p.includes('IPV6');
+  const dots = [];
+  if(has4) dots.push('<span class="proto-dot ipv4" title="IPv4"></span>');
+  if(has6) dots.push('<span class="proto-dot ipv6" title="IPv6"></span>');
+  if(!dots.length) return '<span style="color:var(--dim)">--</span>';
+  return `<span class="proto-dots">${dots.join('')}</span>`;
+}
+
+function detailPanel(n,d,a){
+  return `<div class="detail-grid">
+    <div class="detail-section">
+      <h3>🔥 CPU & 内存</h3>
+      <div class="info-grid">
+        <div class="info-item"><span class="k">CPU 使用率</span><span class="v">${(d.cpu||0).toFixed(1)}%</span></div>
+        <div class="info-item"><span class="k">CPU 核心</span><span class="v">${d.cpu_cores||'--'}</span></div>
+        <div class="info-item"><span class="k">内存使用</span><span class="v" style="color:var(--purple)">${fmtBytes(d.memory_used*1024)}</span></div>
+        <div class="info-item"><span class="k">内存总量</span><span class="v">${fmtBytes(d.memory_total*1024)}</span></div>
+        <div class="info-item"><span class="k">内存使用率</span><span class="v">${(d.memory||0).toFixed(1)}%</span></div>
+        <div class="info-item"><span class="k">Swap</span><span class="v">${fmtBytes(d.swap_used*1024)} / ${fmtBytes(d.swap_total*1024)}</span></div>
+        <div class="info-item"><span class="k">负载 1/5/15</span><span class="v">${(d.load1||0).toFixed(2)} / ${(d.load5||0).toFixed(2)} / ${(d.load15||0).toFixed(2)}</span></div>
+        <div class="info-item"><span class="k">TCP 连接</span><span class="v">${d.tcp_count||0}</span></div>
+      </div>
+      ${procTable('CPU Top 5',d.top_cpu,'cpu')}
+    </div>
+    <div class="detail-section">
+      <h3>💾 硬盘 & 流量</h3>
+      <div class="info-grid">
+        <div class="info-item"><span class="k">硬盘使用</span><span class="v" style="color:var(--orange)">${fmtBytes(d.disk_used)}</span></div>
+        <div class="info-item"><span class="k">硬盘总量</span><span class="v">${fmtBytes(d.disk_total)}</span></div>
+        <div class="info-item"><span class="k">硬盘使用率</span><span class="v">${(d.disk||0).toFixed(1)}%</span></div>
+        <div class="info-item"><span class="k">Client IP</span><span class="v" style="color:var(--accent)">${esc(d.ip||'--')}</span></div>
+        <div class="info-item"><span class="k">今日流量</span><span class="v">${fmtBytes(d.vnstat_today||0)}</span></div>
+        <div class="info-item"><span class="k">今日 ↓|↑</span><span class="v"><span style="color:var(--accent)">${fmtBytes(d.vnstat_today_down||0)}</span>|<span style="color:var(--purple)">${fmtBytes(d.vnstat_today_up||0)}</span></span></div>
+        <div class="info-item"><span class="k">本月流量</span><span class="v">${fmtBytes(d.vnstat_month||0)}</span></div>
+        <div class="info-item"><span class="k">本月 ↓|↑</span><span class="v"><span style="color:var(--accent)">${fmtBytes(d.vnstat_month_down||0)}</span>|<span style="color:var(--purple)">${fmtBytes(d.vnstat_month_up||0)}</span></span></div>
+        <div class="info-item"><span class="k">历史总流量</span><span class="v" style="color:var(--green)">${fmtBytes(d.vnstat_total||0)}</span></div>
+        <div class="info-item"><span class="k">历史 ↓|↑</span><span class="v"><span style="color:var(--accent)">${fmtBytes(d.vnstat_total_down||0)}</span>|<span style="color:var(--purple)">${fmtBytes(d.vnstat_total_up||0)}</span></span></div>
+      </div>
+      ${procTable('内存 Top 5',d.top_mem,'mem')}
+    </div>
+    <div class="detail-section">
+      <h3>🌐 网络 & 延时</h3>
+      ${netTable(d.net||[])}
+      <div class="ping-detail">${pingDetail(d.ping)}</div>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <h3>📈 网速趋势</h3>
+    <canvas class="chart" id="chart-${esc(n)}" width="800" height="80"></canvas>
+  </div>`;
+}
+
+function procTable(title,procs,type){
+  if(!procs || !procs.length) return '';
+  return `<h3 style="margin-top:8px;font-size:13px;color:var(--text);font-weight:700">${title}</h3>
+  <table class="proc-table">${procs.map(p=>{
+    const val = type==='cpu' ? p.cpu : p.memory;
+    const c = val>50 ? 'var(--red)' : val>20 ? 'var(--orange)' : 'var(--green)';
+    return `<tr><td style="color:var(--text)">${esc(p.name)} <span style="color:var(--dim)">[${p.pid}]</span></td><td><div class="proc-bar"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(val,100)}%;background:${c}"></div></div><span style="color:${c}">${val.toFixed(1)}%</span></div></td></tr>`;
+  }).join('')}</table>`;
+}
+
+function netTable(nets){
+  if(!nets.length) return '<div style="color:var(--dim);font-weight:700">无网卡数据</div>';
+  return `<table class="net-table"><tr><th>网卡</th><th>接收</th><th>发送</th><th>↓速度</th><th>↑速度</th></tr>
+  ${nets.map(n=>`<tr><td style="color:var(--accent)">${esc(n.name)}</td><td>${fmtBytes(n.download)}</td><td>${fmtBytes(n.upload)}</td><td style="color:var(--accent)">${fmtSpeed(n.download_rate)}</td><td style="color:var(--purple)">${fmtSpeed(n.upload_rate)}</td></tr>`).join('')}</table>`;
+}
+
+function pingDetail(p){
+  if(!p) return '<span style="color:var(--dim);font-weight:700">无数据</span>';
+  return Object.entries(p).map(([h,ms])=>{
+    const label = PING_LABELS[h] || h;
+    const c = ms<0 ? 'var(--red)' : ms<60 ? 'var(--green)' : ms<150 ? 'var(--orange)' : 'var(--red)';
+    return `<div class="item"><div class="host">${label}</div><div class="ms" style="color:${c}">${ms<0?'超时':ms+'ms'}</div></div>`;
+  }).join('');
+}
+
+function drawChart(n,cd){
+  if(!cd) return;
+  const c = document.getElementById('chart-'+n);
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const dpr = devicePixelRatio || 1;
+  const rect = c.getBoundingClientRect();
+  c.width = rect.width * dpr; c.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = rect.height;
+  ctx.clearRect(0,0,W,H);
+  if(cd.up.length < 2) return;
+  const all = [...cd.up, ...cd.dn];
+  const mx = Math.max(...all,1024) * 1.2;
+  ctx.strokeStyle='#e9edf6';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=H*i/4;
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    ctx.fillStyle='#8a97b3';ctx.font='10px sans-serif';
+    ctx.fillText(fmtSpeed(mx*(4-i)/4),4,y-2);
+  }
+  const step=W/(MAX_PTS-1), off=MAX_PTS-cd.up.length;
+  ctx.beginPath();ctx.moveTo(off*step,H);
+  cd.dn.forEach((v,i)=>ctx.lineTo((off+i)*step,H-v/mx*H));
+  ctx.lineTo(W,H);ctx.closePath();
+  ctx.fillStyle='rgba(0,102,255,0.08)';ctx.fill();
+  ctx.beginPath();
+  cd.dn.forEach((v,i)=>{if(i===0) ctx.moveTo((off+i)*step,H-v/mx*H); else ctx.lineTo((off+i)*step,H-v/mx*H);});
+  ctx.strokeStyle='#0066ff';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(off*step,H);
+  cd.up.forEach((v,i)=>ctx.lineTo((off+i)*step,H-v/mx*H));
+  ctx.lineTo(W,H);ctx.closePath();
+  ctx.fillStyle='rgba(124,58,237,0.06)';ctx.fill();
+  ctx.beginPath();
+  cd.up.forEach((v,i)=>{if(i===0) ctx.moveTo((off+i)*step,H-v/mx*H); else ctx.lineTo((off+i)*step,H-v/mx*H);});
+  ctx.strokeStyle='#7c3aed';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.font='10px sans-serif';
+  ctx.fillStyle='#0066ff';ctx.fillRect(W-100,6,10,3);ctx.fillText('下载',W-86,11);
+  ctx.fillStyle='#7c3aed';ctx.fillRect(W-50,6,10,3);ctx.fillText('上传',W-36,11);
+}
+
+function fmtSpeed(b){if(!b||b<=0)return'0 B/s';if(b<1024)return b.toFixed(0)+' B/s';if(b<1048576)return(b/1024).toFixed(1)+' KB/s';if(b<1073741824)return(b/1048576).toFixed(1)+' MB/s';return(b/1073741824).toFixed(2)+' GB/s';}
+function fmtBytes(b){if(!b||b<=0)return'0 B';if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';if(b<1073741824)return(b/1048576).toFixed(1)+' MB';if(b<1099511627776)return(b/1073741824).toFixed(2)+' GB';return(b/1099511627776).toFixed(2)+' TB';}
+function fmtUptime(s){if(!s)return'--';const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);let r='';if(d)r+=d+'天';if(h)r+=h+'时';r+=m+'分';return r;}
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function lerp(a,b,t){return a+(b-a)*t;}
+
+function tick(){
+  Object.keys(state.chartData).forEach(n=>{
+    if(state.expanded.has(n)) drawChart(n, state.chartData[n]);
+  });
+  requestAnimationFrame(tick);
+}
+
+if(window.__INIT_DATA__) syncServers(window.__INIT_DATA__);
+else fetch('/api/data').then(r=>r.json()).then(syncServers).catch(()=>{});
+bindUI();
+connectWS();
+render();
+tick();
+</script>
+</body>
+</html>
