@@ -121,9 +121,11 @@ body{
 
 .ch-traffic{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
 .ch-traffic .dn{color:var(--text)}.ch-traffic .up{color:var(--text)}
+.ch-traffic .sep{display:inline-block;margin:0 7px;color:var(--dim)}
 
 .ch-speed{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
 .ch-speed .dn{color:var(--text)}.ch-speed .up{color:var(--text)}
+.ch-speed .sep{display:inline-block;margin:0 7px;color:var(--dim)}
 
 .bar-cell{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;padding:0 8px}
 .bar-bg{
@@ -444,9 +446,9 @@ function render(){
       <div class="ch-uptime">${fmtUptime(d.uptime)}</div>
       <div class="ch-ip">${esc(d.ip||'--')}</div>
       <div class="ch-load">${(d.load1||0).toFixed(2)}</div>
-      <div class="ch-traffic"><span class="dn">${fmtBytes(d.vnstat_month_down||0)}</span>|<span class="up">${fmtBytes(d.vnstat_month_up||0)}</span></div>
-      <div class="ch-speed"><span class="dn">${fmtSpeed(a.dn||0)}</span>|<span class="up">${fmtSpeed(a.up||0)}</span></div>
-      <div class="ch-traffic"><span class="dn">${fmtBytes(d.vnstat_total_down||0)}</span>|<span class="up">${fmtBytes(d.vnstat_total_up||0)}</span></div>
+      <div class="ch-traffic"><span class="dn">${fmtBytes(d.vnstat_month_down||0)}</span><span class="sep">|</span><span class="up">${fmtBytes(d.vnstat_month_up||0)}</span></div>
+      <div class="ch-speed"><span class="dn">${fmtSpeed(a.dn||0)}</span><span class="sep">|</span><span class="up">${fmtSpeed(a.up||0)}</span></div>
+      <div class="ch-traffic"><span class="dn">${fmtBytes(d.vnstat_total_down||0)}</span><span class="sep">|</span><span class="up">${fmtBytes(d.vnstat_total_up||0)}</span></div>
       <div>${barMini(a.cpu,'#00a86b','#e04060')}</div>
       <div>${barMini(a.mem,'#7c3aed','#e04060')}</div>
       <div>${barMini(a.disk,'#e8920a','#e04060')}</div>
