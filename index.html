@@ -66,6 +66,17 @@ body{
   background:var(--board-bg);
 }
 
+.repo-link-wrap{
+  width:75%;max-width:100%;margin:20px auto 0;
+  display:flex;justify-content:center
+}
+.repo-link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--header);text-decoration:none;font-size:17px
+}
+.repo-link:hover{text-decoration:underline}
+.repo-link svg{width:16px;height:16px;flex:none}
+
 .cards{padding:0;display:flex;flex-direction:column;gap:0}
 .server-card{
   background:var(--card);
@@ -79,7 +90,7 @@ body{
 .server-card:hover{background:var(--card)}
 
 .card-header{
-  display:grid;grid-template-columns:120px 90px 120px 130px 80px 120px 120px 120px 90px 90px 90px 150px;
+  display:grid;grid-template-columns:120px 90px 120px 110px 80px 120px 140px 140px 90px 90px 90px 150px;
   align-items:center;justify-items:center;padding:8px 10px;gap:8px;cursor:pointer;min-height:44px
 }
 .card-header > div{
@@ -114,17 +125,17 @@ body{
 .ch-speed{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
 .ch-speed .dn{color:var(--text)}.ch-speed .up{color:var(--text)}
 
-.bar-cell{display:flex;align-items:center;justify-content:center;width:100%;min-width:0}
+.bar-cell{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;padding:0 8px}
 .bar-bg{
-  position:relative;flex:1;height:20px;background:var(--bar-track);border-radius:3px;overflow:hidden;
-  min-width:52px;border:1px solid var(--subtle);
+  position:relative;flex:0 1 86%;height:20px;background:var(--bar-track);border-radius:3px;overflow:hidden;
+  min-width:44px;border:1px solid var(--subtle);
   display:flex;align-items:center;justify-content:center
 }
 .bar-fill{
   position:absolute;left:0;top:0;height:100%;border-radius:2px;transition:width .4s ease;z-index:0
 }
 .bar-label{
-  position:relative;z-index:1;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;
+  position:relative;z-index:1;font-size:12px;font-weight:400;font-variant-numeric:tabular-nums;line-height:1;
   text-align:center;width:100%;padding:0 4px;white-space:nowrap;color:var(--text);
   text-shadow:0 0 6px var(--card),0 0 4px var(--card),0 1px 2px var(--card);
   pointer-events:none
@@ -137,7 +148,7 @@ body{
 .ping-item.bad{background:#e65f7920;color:#db4f6b}
 
 .col-labels{
-  display:grid;grid-template-columns:120px 90px 120px 130px 80px 120px 120px 120px 90px 90px 90px 150px;
+  display:grid;grid-template-columns:120px 90px 120px 110px 80px 120px 140px 140px 90px 90px 90px 150px;
   justify-items:center;padding:8px 10px;gap:8px;background:var(--header-bg);border-bottom:1px solid var(--border)
 }
 .col-labels span{
@@ -233,6 +244,12 @@ canvas.chart{width:100%;height:80px;display:block}
       </div>
     </div>
   </div>
+</div>
+<div class="repo-link-wrap">
+  <a class="repo-link" href="https://github.com/giddily/ServerStatus" target="_blank" rel="noopener noreferrer">
+    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+    <span>ServerStatus</span>
+  </a>
 </div>
 
 <script>
