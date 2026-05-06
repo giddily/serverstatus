@@ -38,6 +38,7 @@ demo
 
 - Go 1.20+（建议）
 - Linux 、Mac
+  
 apt install vnstat
 brew  install vnstat
 ---
