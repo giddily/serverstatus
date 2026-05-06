@@ -37,16 +37,9 @@ demo
 ## 3. 环境要求
 
 - Go 1.20+（建议）
-- Linux（客户端读取 `/proc`、执行 `df/ps/ping/vnstat`）
-- 客户端依赖命令：
-  - `ping`
-  - `ps`
-  - `df`
-  - `vnstat`（用于流量统计）
-
-> 注：`vnstat` 未安装或数据库未初始化时，月流量/总流量可能显示为 `0`。
-
+- Linux 、Mac
 apt install vnstat
+brew  install vnstat
 ---
 
 ## 4. 编译
@@ -158,7 +151,6 @@ vnstat --json
 - 已设置 HTTP 超时（`Read/Write/Idle Timeout`）
 - `/api/report` 已限制请求体大小（1MB）并启用严格 JSON 字段校验
 - WebSocket 广播改为非阻塞，广播队列满时丢弃并计数，避免上报链路被反压拖死
-- 客户端连接与广播流程已修复并发 map 读写风险
 
 ---
 
