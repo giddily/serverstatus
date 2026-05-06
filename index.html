@@ -114,10 +114,21 @@ body{
 .ch-speed{font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
 .ch-speed .dn{color:var(--text)}.ch-speed .up{color:var(--text)}
 
-.bar-cell{display:flex;align-items:center;justify-content:center;gap:4px}
-.bar-bg{flex:1;height:14px;background:var(--bar-track);border-radius:0;overflow:hidden;min-width:40px;border-left:1px solid var(--subtle);border-right:1px solid var(--subtle)}
-.bar-fill{height:100%;border-radius:0;transition:width .4s ease}
-.bar-label{font-size:14px;font-weight:400;width:52px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+.bar-cell{display:flex;align-items:center;justify-content:center;width:100%;min-width:0}
+.bar-bg{
+  position:relative;flex:1;height:20px;background:var(--bar-track);border-radius:3px;overflow:hidden;
+  min-width:52px;border:1px solid var(--subtle);
+  display:flex;align-items:center;justify-content:center
+}
+.bar-fill{
+  position:absolute;left:0;top:0;height:100%;border-radius:2px;transition:width .4s ease;z-index:0
+}
+.bar-label{
+  position:relative;z-index:1;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;
+  text-align:center;width:100%;padding:0 4px;white-space:nowrap;color:var(--text);
+  text-shadow:0 0 6px var(--card),0 0 4px var(--card),0 1px 2px var(--card);
+  pointer-events:none
+}
 
 .ping-cell{display:grid;grid-template-columns:repeat(3,1fr);justify-content:center;gap:4px;font-size:14px;font-weight:400;font-variant-numeric:tabular-nums;white-space:nowrap;width:100%}
 .ping-item{padding:1px 4px;border-radius:2px;min-width:0;text-align:center;white-space:nowrap;line-height:1.3;color:var(--text)}
@@ -450,7 +461,7 @@ function render(){
 function barMini(v, good, bad){
   const pct = Math.min(Math.max(v || 0, 0), 100);
   const c = (v||0) > 80 ? bad : (v||0) > 50 ? 'var(--orange)' : good;
-  return `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${c};opacity:.85"></div></div><span class="bar-label">${Math.round(v||0)}%</span></div>`;
+  return `<div class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${c};opacity:.88"></div><span class="bar-label">${Math.round(v||0)}%</span></div></div>`;
 }
 
 function pingCell(p){

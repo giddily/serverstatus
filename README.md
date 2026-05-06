@@ -7,13 +7,6 @@
 前端展示包含：CPU、内存、硬盘、负载、网络速率、流量统计（`vnstat`）、延迟探测、进程 Top、网卡明细等。
 
 ---
-demo：
-<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/d02b62d9-6175-4fa7-a5e6-271912f62bb3" />
-
-
-<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/90b17ba7-c5cf-43a5-9392-0b0c02209fdf" />
-
-<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/72a54630-3900-4c4f-8df4-2196a423d7fa" />
 
 
 ## 1. 功能概览
@@ -47,6 +40,7 @@ demo：
   - `vnstat`（用于流量统计）
 
 > 注：`vnstat` 未安装或数据库未初始化时，月流量/总流量可能显示为 `0`。
+
 apt install vnstat
 ---
 
