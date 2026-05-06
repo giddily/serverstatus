@@ -7,7 +7,12 @@
 前端展示包含：CPU、内存、硬盘、负载、网络速率、流量统计（`vnstat`）、延迟探测、进程 Top、网卡明细等。
 
 ---
+demo
+<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/2ca15dbd-fd30-4d0e-b2fd-8770b06f843c" />
 
+<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/815a11eb-1418-47e4-9619-08315f4c7a3a" />
+
+<img width="3749" height="1848" alt="image" src="https://github.com/user-attachments/assets/6f664683-efba-40e4-9adc-4797b6708e2f" />
 
 ## 1. 功能概览
 
